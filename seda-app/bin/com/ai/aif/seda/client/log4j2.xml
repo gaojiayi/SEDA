@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status=debug 可以查看log4j的装配过程 -->
+<configuration status="OFF" monitorInterval="1800">
+	<properties>
+		<property name="LOG_HOME">/log/seda/test</property>
+		<!-- 流程日志 -->
+		<property name="FLOW_HOME">${LOG_HOME}/flow</property>
+		<property name="FLOW_NAME">flow</property>
+		<property name="SERVER_NAME">seda_client</property>
+	</properties>
+	<appenders>
+		<!-- 定义控制台输出 -->
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS}|%t|%-5level|%class{36}.%M:%L|%msg%n" />
+
+		</Console>
+
+		<!-- 调试日志 -->
+		<RollingRandomAccessFile name="runlog"
+			fileName="${LOG_HOME}/${SERVER_NAME}.ing" filePattern="${LOG_HOME}/${SERVER_NAME}.%d{yyyyMMddHHmmss}.log">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS}|%t|%-5level|%class{36}.%M:%L|%msg%n" />
+			<Policies>
+				<!-- TimeBasedTriggeringPolicy interval="1" modulate="true" / -->
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingRandomAccessFile>
+
+
+		<RollingRandomAccessFile name="flowlog"
+			fileName="${FLOW_HOME}/${FLOW_NAME}.ing" filePattern="${FLOW_HOME}/${FLOW_NAME}.%d{yyyyMMddHHmmss}.log">
+			<PatternLayout pattern="%msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="1 MB" />
+			</Policies>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<!-- 3rdparty Loggers -->
+		<logger name="org.slf4j" level="info" />
+		<logger name="io.netty" level="info" />
+		<!-- Game Stat logger -->
+		<logger name="com.ai.aif.seda.client.Log4j2Test" level="info"
+			additivity="false">
+			<appender-ref ref="flowlog" />
+		</logger>
+		<!-- Root Logger -->
+		<root level="DEBUG" includeLocation="true">
+			<appender-ref ref="runlog" />
+			<appender-ref ref="Console" />
+		</root>
+	</loggers>
+</configuration>  

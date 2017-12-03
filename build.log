@@ -1,0 +1,67 @@
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@57fa26b7
+--- MESSAGE LOGGED
+Setting ro project property: ant.project.invoked-targets -> main
+--- MESSAGE LOGGED
+Adding reference: eclipse.ant.targetVector
+--- MESSAGE LOGGED
+Build sequence for target(s) `main' is [clean, call_maven, tar, main]
+--- MESSAGE LOGGED
+Complete build sequence is [clean, call_maven, tar, main, lib.init, ]
+>> TARGET STARTED -- clean
+
+clean:
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@1996cd68
+--- MESSAGE LOGGED
+     [echo] clean build directory.
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@1996cd68
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@51016012
+--- MESSAGE LOGGED
+   [delete] Directory does not exist: F:\seda-all\build
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@51016012
+<< TARGET FINISHED -- clean
+clean:  duration 0 seconds
+>> TARGET STARTED -- call_maven
+
+call_maven:
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@47f37ef1
+--- MESSAGE LOGGED
+     [echo] mvn clean install....
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@47f37ef1
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@5a01ccaa
+--- MESSAGE LOGGED
+Adding reference: maven-ant-tasks.classpath
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@5a01ccaa
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@75bd9247
+--- MESSAGE LOGGED
+dropping F:\locallib\org\apache\maven\maven-ant-tasks\2.1.3\maven-ant-tasks-2.1.3.jar from path as it doesn't exist
+--- MESSAGE LOGGED
+  [typedef] Could not load definitions from resource org/apache/maven/artifact/ant/antlib.xml. It could not be found.
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@75bd9247
+>>> TASK STARTED -- org.apache.tools.ant.UnknownElement@3cb5cdba
+<<< TASK FINISHED -- org.apache.tools.ant.UnknownElement@3cb5cdba
+<< TARGET FINISHED -- call_maven
+call_maven:  duration 0 seconds
+< BUILD FINISHED
+
+BUILD FAILED
+
+F:\seda-all\build.xml:48: Problem: failed to create task or type urn:maven-artifact-ant:pom
+Cause: The name is undefined.
+Action: Check the spelling.
+Action: Check that any custom tasks/types have been declared.
+Action: Check that any <presetdef>/<macrodef> declarations have taken place.
+No types or tasks have been defined in this namespace yet
+
+	at org.apache.tools.ant.UnknownElement.getNotFoundException(UnknownElement.java:500)
+	at org.apache.tools.ant.UnknownElement.makeObject(UnknownElement.java:432)
+	at org.apache.tools.ant.UnknownElement.maybeConfigure(UnknownElement.java:164)
+	at org.apache.tools.ant.Task.perform(Task.java:347)
+	at org.apache.tools.ant.Target.execute(Target.java:435)
+	at org.apache.tools.ant.Target.performTasks(Target.java:456)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1405)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1376)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.eclipse.ant.internal.launching.remote.EclipseDefaultExecutor.executeTargets(EclipseDefaultExecutor.java:36)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1260)
+	at org.eclipse.ant.internal.launching.remote.InternalAntRunner.run(InternalAntRunner.java:453)
+	at org.eclipse.ant.internal.launching.remote.InternalAntRunner.main(InternalAntRunner.java:140)

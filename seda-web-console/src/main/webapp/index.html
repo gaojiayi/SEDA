@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<title>seda-web-console</title>
+</head>
+<body>
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active"><a href="#home" onclick="sendReq('QUERY_SERVER');return false;" data-toggle="tab"> 服务列表 </a></li>
+		<li><a href="#queue"
+			onclick="sendReq('QUERY_QUEUE');return false;" data-toggle="tab">
+				队列 </a></li>
+		<li><a href="#thread"
+			onclick="sendReq('QUERY_THREAD');return false;" data-toggle="tab">
+				消费线程 </a></li>
+		<li class="dropdown"><a href="#" id="myTabDrop1"
+			class="dropdown-toggle" data-toggle="dropdown">消息流水 <b
+				class="caret"></b>
+		</a>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+				<li><a href="#all" tabindex="-1"
+					onclick="sendReq('QUERY_MESSAGE_FLOW','');return false;"
+					data-toggle="tab">ALL</a></li>
+				<li><a href="#request" tabindex="-1"
+					onclick="sendReq('QUERY_MESSAGE_FLOW','Req');return false;"
+					data-toggle="tab">Request</a></li>
+				<li><a href="#response" tabindex="-1"
+					onclick="sendReq('QUERY_MESSAGE_FLOW','Resp');return false;"
+					data-toggle="tab">Response</a></li>
+			</ul></li>		
+	</ul>
+
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade in active" id="home">
+			<table class="table table-striped">
+				<caption id="server_top"><a href="#" onclick="sendReq('QUERY_SERVER','clear');return false;">Clear</a></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Client address</th>
+						<th>Server address</th>
+						<th>调用次数</th>
+						<th>状态</th>
+						<th>支持的并发数</th>
+						<th>当前并发数</th>
+						<th>是否健康</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="result">
+				</tbody>
+			</table>
+			<div>
+			 <p>字段描述：</p>
+			 <ul class="list-unstyled">
+				<li>&nbsp;&nbsp;是否健康
+					<ul>
+						<li>Abnormal : 已超出2分钟未收到Seda Client上报的数据，Seda Client 5秒上报一次。</li>
+						<li>Normal ： 服务正常</li>
+					</ul>
+				</li>	
+				<li>&nbsp;&nbsp;状态
+					<ul>
+						<li>offline : Server端故障</li>
+						<li>online : Server端正常</li>
+					</ul>
+				</li>				
+			</ul>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="queue">
+			<table class="table table-striped">
+				<caption id="queue_top"><a href="#" onclick="sendReq('QUERY_QUEUE','clear');return false;">Clear</a></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Client address</th>
+						<th>Queue ID</th>
+						<th>Queue Size</th>
+						<th>已消费的个数</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="QueueResult">
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="thread">
+			<table class="table table-striped">
+				<caption id="thread_top"><a href="#" onclick="sendReq('QUERY_THREAD','clear');return false;">Clear</a></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Client address</th>
+						<th>Queue ID</th>
+						<th>CurrentPoolSize</th>
+						<th>MaxPoolSize</th>
+						<th>CorePoolSize</th>
+						<th>ActiveCount</th>
+						<th>TaskQueueSize</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="ThreadResult">
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="all">
+			<table class="table table-striped">
+				<caption id="all_top"></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Type</th>
+						<th>Server code</th>
+						<th>Unique Code</th>
+						<th>Create time</th>
+						<th>Remote address</th>
+						<th>Command type</th>
+						<th>Event type</th>
+						<th>Message</th>
+						<th>Return code</th>
+						<th>Return msg</th>
+						<th>result</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="AllResult">
+				</tbody>
+			</table>
+			<div align="center"><ul id='all_page' class='pagination pagination-sm'></ul></div>
+		</div>
+		<div class="tab-pane fade" id="request">
+			<table class="table table-striped">
+				<caption id="req_top">Request</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Type</th>
+						<th>Server code</th>
+						<th>Unique Code</th>
+						<th>Create time</th>
+						<th>Command type</th>
+						<th>Event type</th>
+						<th>Message</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="RequestResult">
+				</tbody>
+			</table>
+			<div align="center"><ul id='req_page' class='pagination pagination-sm'></ul></div>
+		</div>
+		<div class="tab-pane fade" id="response">
+			<table class="table table-striped">
+				<caption id="resp_top">Response</caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Type</th>
+						<th>Server code</th>
+						<th>Unique Code</th>
+						<th>Create time</th>
+						<th>Remote address</th>
+						<th>Command type</th>
+						<th>Event type</th>
+						<th>Describe</th>
+						<th>Return code</th>
+						<th>Return msg</th>
+						<th>result</th>
+						<th>Refresh time</th>
+					</tr>
+				</thead>
+				<tbody id="ResponseResult">
+				</tbody>
+			</table>
+			<div align="center"><ul id='resp_page' class='pagination pagination-sm'></ul></div>
+		</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/jquery-3.1.0.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+	    var timer=-1;
+		var vType="";
+		var vDataType="";
+		var v_currPage=1;
+		var v_currBuPage=1;
+		var v_currType;
+		var v_currDataType;
+		function clear(type,dataType){		
+		 if (vType != type || vDataType != dataType){
+			clearInterval(timer);	
+			timer = setInterval("sendReq('"+type+"','"+dataType+"')",5000);
+		 }		
+		}
+		function sendReq(type, dataType) { 	
+			if ("clear" != dataType){
+				clear(type, dataType);
+				vType=type;
+				vDataType = dataType;				
+			}
+			if (v_currType != type || v_currDataType != dataType){
+				v_currPage = 1;
+				v_currBuPage = 1;
+			}
+			v_currType = type;
+			v_currDataType = dataType;
+			
+			$
+					.ajax({
+						//请求方式为get  
+						type : "GET",
+						//json文件位置  
+						url : "command.do?queryType=" + type + "&dataType="
+								+ dataType,
+						//返回数据格式为json  
+						dataType : "json",
+						//请求成功完成后要执行的方法  
+						success : function(data) {
+							if ("QUERY_SERVER" == type) {
+								queryServer(data);
+							} else if ("QUERY_QUEUE" == type) {
+								queryQueue(data);
+							} else if ("QUERY_THREAD" == type) {
+								queryThread(data);
+							} else if ("QUERY_MESSAGE_FLOW" == type) {
+								if ("Req" == dataType) {
+									queryReq(data);
+								} else if ("Resp" == dataType) {
+									queryResp(data);
+								} else {
+									queryALL(data);
+								}
+							}
+
+						},
+						error : function() {
+							showNoDataTable(type,dataType);
+						}
+					})
+			
+		};
+		
+		function showNoDataTable(type,dataType){
+			var v_hmtl;
+			var colspan;
+			if ("QUERY_SERVER" == type) {
+				v_hmtl="#result";
+				colspan=10;
+			} else if ("QUERY_QUEUE" == type) {
+				v_hmtl="#QueueResult";
+				colspan=9;
+			} else if ("QUERY_THREAD" == type) {
+				v_hmtl="#ThreadResult";
+				colspan=9;
+			} else if ("QUERY_MESSAGE_FLOW" == type) {
+				if ("Req" == dataType) {
+					v_hmtl="#RequestResult";
+					colspan=9;
+				} else if ("Resp" == dataType) {
+					v_hmtl="#ResponseResult";
+					colspan=13;
+				} else {
+					v_hmtl="#AllResult";
+					colspan=13;
+				}
+			}
+			$(v_hmtl).html("");
+			$(v_hmtl)
+					.append(
+							"<tr><td align=\"center\" colspan="+colspan+">No data</td></tr>");
+		}
+
+		function queryALL(data) {
+			$("#AllResult").html("");
+			var myDate = new Date();
+			var index = 0;
+			$.each(data, function(i, item) {
+				$.each(item, function(j, value) {
+					index++;
+					var content = "<tr><td>" + index + "</td><td>" + value.Type
+							+ "</td><td>" + value.ServerCode + "</td><td>"
+							+ value.UniqueCode + "</td><td>" + value.CreateTime
+							+ "</td><td>" + ((typeof(value.RemoteAddress)=='undefined')? '---':value.RemoteAddress)+ "</td><td>"
+							+ value.CommandType + "</td><td>" + value.EvenType
+							+ "</td><td>" + ((typeof(value.Message)=='undefined')?((typeof(value.Describe)=='undefined')?'---':value.Describe):value.Message) + "</td><td>"
+							+ ((typeof(value.ReturnCode) =='undefined')?'---':value.ReturnCode) + "</td><td>" + ((typeof(value.ReturnMsg)=='undefined')? '---':value.ReturnMsg)
+							+ "</td><td>" + ((typeof(value.Result) =='undefined')?'---':value.Result)+ "</td><td>"+myDate.toLocaleString()+"</td></tr>";
+					$("#AllResult").append(content);
+				})
+			})
+			//$("#all_top").html("<font style='color:blue;'> Request/Response Total ("+index+")</font>");
+			if (index == 0){
+				showNoDataTable('QUERY_MESSAGE_FLOW','');
+				return;
+			}
+			Paging(v_currPage,v_currBuPage,0,'AllResult','#all_page');
+		}
+
+		function queryReq(data) {
+			$("#RequestResult").html("");
+			var index = 0;
+			var myDate = new Date();
+			$.each(data, function(i, value) {
+					index++;
+					var content = "<tr><td>" + index + "</td><td>" + value.Type
+							+ "</td><td>" + value.ServerCode + "</td><td>"
+							+ value.UniqueCode + "</td><td>" + value.CreateTime
+							+ "</td><td>" + value.CommandType + "</td><td>"
+							+ value.EvenType + "</td><td>" + value.Message
+							+ "</td><td>"+myDate.toLocaleString()+"</td></tr>";
+					$("#RequestResult").append(content);
+			})
+			//$("#req_top").html("<font style='color:blue;'> Request Total ("+index+")</font>");
+			if (index == 0){
+				showNoDataTable('QUERY_MESSAGE_FLOW','Req');
+				return;
+			}
+			Paging(v_currPage,v_currBuPage,1,'RequestResult','#req_page');
+		}
+
+		function queryResp(data) {
+			$("#ResponseResult").html("");
+			var index = 0;
+			var myDate = new Date();
+			$.each(data, function(i, value) {
+					index++;
+					var content = "<tr><td>" + index + "</td><td>" + value.Type
+							+ "</td><td>" + value.ServerCode + "</td><td>"
+							+ value.UniqueCode + "</td><td>" + value.CreateTime
+							+ "</td><td>" + value.RemoteAddress + "</td><td>"
+							+ value.CommandType + "</td><td>" + value.EvenType
+							+ "</td><td>" + value.Describe + "</td><td>"
+							+ value.ReturnCode + "</td><td>" + value.ReturnMsg
+							+ "</td><td>" + value.Result + "</td><td>"+myDate.toLocaleString()+"</td></tr>";
+					$("#ResponseResult").append(content);
+			})
+			//$("#resp_top").html("<font style='color:blue;'> Response Total ("+index+")</font>");
+			if (index == 0){
+				showNoDataTable('QUERY_MESSAGE_FLOW','Resp');
+				return;
+			}
+			Paging(v_currPage,v_currBuPage,2,'ResponseResult','#resp_page');
+		}
+
+		function queryQueue(data) {
+			$("#QueueResult").html("");
+			var index = 0;
+			var myDate = new Date();
+			$.each(data, function(i, item) {
+				$.each(item, function(j, value) {
+					index++;
+					var content = "<tr><td>" + index + "</td><td>" + i
+							+ "</td><td>" + j + "</td><td>" + value.size + "</td><td>" + value.consumerCount
+							+ "</td><td>"+myDate.toLocaleString()+"</td></tr>";
+					$("#QueueResult").append(content);
+				})
+			})
+			if (index == 0){
+				showNoDataTable('QUERY_QUEUE','');
+				return;
+			}
+		}
+
+		function queryThread(data) {
+			$("#ThreadResult").html("");
+			var index = 0;
+			var myDate = new Date();
+			$.each(data, function(i, item) {
+				$.each(item, function(j, v) {
+					index++;
+					var content = "<tr><td>" + index + "</td><td>" + i
+							+ "</td><td>" + j + "</td><td>" + v.CurrentPoolSize
+							+ "</td><td>" + v.MaxPoolSize + "</td><td>"
+							+ v.CorePoolSize + "</td><td>" + v.ActiveCount
+							+ "</td><td>" + v.TaskQueueSize + "</td><td>"+myDate.toLocaleString()+"</td>"
+							+ "</tr>";
+					$("#ThreadResult").append(content);
+				})
+			})
+			if (index == 0){
+				showNoDataTable('QUERY_THREAD','');
+				return;
+			}
+		}
+
+		function queryServer(data) {
+			$("#result").html("");
+			//使用$.each方法遍历返回的数据date,插入到id为#result中  
+			var index = 0;
+			var myDate = new Date();
+			$.each(data, function(i, item) {
+				$.each(item, function(j, value) {
+					index++;
+					var state = "";
+					if (value.isNormal == "Abnormal" || value.state == "offline")
+						state = "style='color:red;'";
+					var content = "<tr "+state+"><td>" + index
+							+ "</td><td>" + i + "</td><td>" + value.address
+							+ "</td><td>" + value.refererCount + "</td><td>"
+							+ value.state + "</td><td>"
+							+ value.concurrentNumber + "</td><td>"+value.currConcurrency + "</td><td>"+value.isNormal+ "</td><td>"+myDate.toLocaleString()+"</td></tr>";
+					$("#result").append(content);
+				})
+			})
+			if (index == 0){
+				showNoDataTable('QUERY_SERVER','');
+				return;
+			}
+		}
+		
+		function Paging(index,cuPage,type,tobodyId,pagebut){  
+			if (v_currPage != index){
+				v_currPage = index;
+			}			
+            var RankInfo = document.getElementById(tobodyId);  
+            var totalPage = RankInfo.rows.length; //总条数  
+            var pageSize = 10;//每页显示条数  
+            var pageNumber = Math.ceil(totalPage/pageSize); //总页数  
+            var currentPage = index;//当前页数  
+            var start_row = (currentPage-1)*pageSize;//开始显示的行  
+            var end_row = currentPage*pageSize;//结束显示的行  
+                end_row = (end_row > totalPage) ? totalPage : end_row;  
+            for(var i=0;i<totalPage;i++){  
+                var irow = RankInfo.rows[i];  
+                if(i>=start_row && i<end_row){  
+                    irow.style.display = 'table-row';  
+                }else {  
+                    irow.style.display = 'none';  
+                }  
+            }   
+    		if(type == 0){
+    			$("#all_top").html("<font style='color:blue;'> Request/Response "+currentPage+"/"+pageNumber+" (total:"+totalPage+")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><a href='#' onclick=\"sendReq('QUERY_MESSAGE_FLOW','clear');return false;\"><font style='color:red;'>Clear</font></a>");
+    		} else if (type == 1) {
+    			$("#req_top").html("<font style='color:blue;'> Request  "+currentPage+"/"+pageNumber+" (total:"+totalPage+")</font>");
+    		} else {
+    			$("#resp_top").html("<font style='color:blue;'> Response "+currentPage+"/"+pageNumber+" (total:"+totalPage+")</font>");
+    		}
+    		
+            showPagebut(cuPage,pageNumber,currentPage,type,tobodyId,pagebut);			
+		}
+		
+		function showPagebut(index,pageNumber,currentPage,type,tobodyId,pagebut){
+			if (v_currBuPage != index){
+				v_currBuPage = index;
+			}
+			$(pagebut).html('');
+			if (pageNumber == 5) {
+				$(pagebut).append("<li><a href='javascript:void(0)'>&laquo;</a></li>");
+				$(pagebut).append('<li class="disabled "><a href="javascript:void(0)">'+ 1 + '</a></li>');
+				$(pagebut).append('<li><a href="javascript:void(0)">&raquo;</a></li> </ul>');
+			} else {
+				if (index > 1){
+					$(pagebut).append('<li><a href="javascript:showPagebut('+(index - 1)+','+pageNumber+','+currentPage+','+type+',\''+tobodyId+'\',\''+pagebut+'\')">&laquo;</a></li> </ul>');
+				}
+				var pagesize = ((pageNumber > 10)? 10 : pageNumber);
+				var page =  Math.ceil(pageNumber / 10);
+				var start = ((index -1) * pagesize + 1);
+				var end=pagesize * index;
+				for (var i = start; i <= end; i++) {
+					var calzz = "";
+					if (currentPage == i) {
+						callzz = "'active'";
+					}
+					$(pagebut).append('<li class='+calzz+'><a href="javascript:Paging('+i+','+index+','+type+',\''+tobodyId+'\',\''+pagebut+'\')">'+ i + '</a></li>');
+				}
+			
+				if ((page > index)){
+					$(pagebut).append('<li><a href="javascript:showPagebut('+(index + 1)+','+pageNumber+','+currentPage+','+type+',\''+tobodyId+'\',\''+pagebut+'\')">&raquo;</a></li> </ul>');
+				}
+			}
+		}
+
+		$(document).ready(sendReq("QUERY_SERVER"));
+	</script>
+</body>
+</html>

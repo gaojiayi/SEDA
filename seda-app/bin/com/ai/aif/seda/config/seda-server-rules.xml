@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<digester-rules>
+	<pattern value="seda-server">
+		<object-create-rule classname="com.ai.aif.seda.config.server.ServerConfig" />
+		<pattern value="property">
+			<pattern value="property">
+				<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+				<set-properties-rule />
+				<set-next-rule methodname="setNodeValue" />
+			</pattern>
+		</pattern>
+		
+	</pattern>
+
+</digester-rules>

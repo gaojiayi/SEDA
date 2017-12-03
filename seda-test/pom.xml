@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ai.aif.seda</groupId>
+		<artifactId>seda-all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>seda-test</artifactId>
+	<name>ai-${artifactId}.${version}.jar</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ai.aif.seda.common</groupId>
+			<artifactId>seda-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ai.aif.seda.interface</groupId>
+			<artifactId>seda-interface</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ai.aif.seda.app</groupId>
+			<artifactId>seda-app</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ai.aif.seda.service</groupId>
+			<artifactId>seda-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.1</version>
+		</dependency>
+	</dependencies>
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<seda-client>
+	<!-- 为每个服务设置超时时间，这里没考虑；原因不清楚服务的关系 -->
+
+	<!-- 属性 -->
+	<property>
+		<!-- 开关 on/off -->
+		<property name="isOpen" value="on" />
+		<property name="channelMaxIdleTimeSeconds" value="120" />
+		<property name="workerThreads" value="4" />
+		<property name="callBackThreads" value="16" /> <!-- 执行回调线程数 -->
+		<property name="defaultConsumerThreads" value="1" /><!-- 消费线程数 -->
+		<property name="sendBatchSize" value="10" /><!-- 批量发送 -->
+		<property name="sendTimeout" value="3000" /><!-- 毫秒 -->
+		<property name="mesgCompressionLimit" value="2048" /><!-- 字节 -->
+		<property name="recordRequestLog" value="true" /><!-- 是否记录请求日志 -->
+
+		<!-- 高、中、低三个优先级所对应消费线程的个数比率 -->
+		<consumer-thread-ratio>
+			<property name="H" value="3" /> <!-- 线程个数：3*defaultConsumerThreads -->
+			<property name="M" value="2" />
+			<property name="L" value="1" />
+		</consumer-thread-ratio>
+	</property>
+
+	<!-- Queue的分类 -->
+	<queues default-size="50000">
+		<!-- priority:H/M/L 可以不配置 -->
+		<!-- type:可以是渠道、业务类型、其它等 如何组合？？ -->
+		<queue id="Q0001" size="10000" priority="M">
+			<match>
+				<condition key="channel_code" value="1" />
+				<condition key="service_type" value="*" />
+				<condition key="region_code" value="A" />
+			</match>
+		</queue>
+		<queue id="Q0002" priority="M">
+			<match>
+				<condition key="channel_code" value="12001" />
+				<condition key="service_type" value="BC" />
+				<condition key="region_code" value="A" />
+			</match>
+		</queue>
+		<queue id="Q0003">
+			<match>
+				<condition key="channel_code" value="2001" />
+			</match>
+		</queue>
+	</queues>
+
+
+	<!-- 服务列表 -->
+	<!--load: random/polling/optimal -->
+	<servers default-port="8989" load="polling"
+		default-connect-timeout="3000" sndbuf_size="65535" rcvbuf_size="65535">
+		<!--state=online/offline -->
+		<server id="001" desc="" state="online">
+			<!-- 可以不设置，若不设置取 default-port -->
+			<property name="port" value="8989" />
+			<property name="ip" value="127.0.0.1" />
+			<property name="concurrentNumber" value="100" />
+
+			<!-- user/password 本次不考虑，先预留 -->
+		</server>
+	</servers>
+
+	<heartbeat>
+		<property name="abnormalTimes" value="3" /> <!-- 异常次数，达到次数后，视为故障 -->
+		<property name="heartbeatClassName"
+			value="com.ai.aif.seda.app.heartbeat.ClientHeartbeatImpl" />
+	</heartbeat>
+
+	<!-- 是否上报资源 -->
+	<report>
+		<!-- on/off -->
+		<property name="isReport" value="on" />
+		<property name="url" value="http://localhost:8080/aopmtn/sedaCommand" />
+		<!-- <property name="url" value="http://localhost:8080/seda/command.do" />  -->
+	</report>
+
+</seda-client>

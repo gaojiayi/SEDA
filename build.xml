@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+<project default="main" name="ai seda" xmlns:artifact="urn:maven-artifact-ant">
+
+	<!--
+***************************************
+PATHS AND PROPERTIES
+***************************************
+-->
+
+	<!-- make environment var FOO available as env.FOO -->
+	<property environment="env" />
+	<property name="M1_REPO" value="F:\locallib" />
+	<property name='build.dir' location='build/' />
+	<property name="esb.lib.dir" location="../../aiesb/lib" />
+	<property name="esb.config.dir" location="../../aiesb/config" />
+	<property name="seda.esb.lib.dir" location="${build.dir}/lib/esblib" />
+	<property name='config.dir' location='config/seda/' />
+	<property name='deploy.name' value='ai-seda-server.0.1.zip' />
+
+	<!--  存放依赖包的目录  -->
+	<property name="build.lib.dir" location="./build" />
+
+	<!--copy 依赖包，暂时不用-->
+	<target name="lib.init">
+		<copy todir="${build.lib.dir}/lib">
+			<fileset refid="deps.fileset.compile" />
+			<mapper type="flatten" />
+		</copy>
+		<copy todir="${build.lib.dir}/test">
+			<fileset refid="deps.fileset.test" />
+			<mapper type="flatten" />
+		</copy>
+		<copy todir="${build.lib.dir}/provide">
+			<fileset refid="deps.fileset.test" />
+			<mapper type="flatten" />
+		</copy>
+	</target>
+
+	<!--调用maven-->
+	<target name="call_maven">
+		<echo>mvn clean install....</echo>
+		<path id="maven-ant-tasks.classpath" path="${M1_REPO}/org/apache/maven/maven-ant-tasks/2.1.3/maven-ant-tasks-2.1.3.jar" />
+
+		<!--  find maven-ant-tasks, you can use classpathref to specify the jar, or just copy the jar to ant/lib   -->
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
+
+		<!--  maven的文件  -->
+		<artifact:pom id="seda.project" file="pom.xml" />
+
+		<!--
+		<artifact:dependencies filesetId="deps.fileset.compile" useScope="compile">
+			<pom refid="seda.project" />
+		</artifact:dependencies>
+		<artifact:dependencies filesetId="deps.fileset.test" scopes="test">
+			<pom refid="seda.project" />
+		</artifact:dependencies>
+
+		<artifact:dependencies filesetId="deps.fileset.provide" scopes="provide">
+			<pom refid="seda.project" />
+		</artifact:dependencies>
+		-->
+
+		<artifact:mvn pom="pom.xml" fork="true" mavenHome="${env.M2_HOME}">
+			<arg value="clean" />
+			<arg value="install" />
+		</artifact:mvn>
+
+		<!--
+		<artifact:mvn pom="pom.xml" fork="true" mavenHome="${env.M2_HOME}">
+			<arg value="install" />
+		</artifact:mvn>
+		-->
+	</target>
+
+	<!--
+	<target name="maven_info" depends="call_maven">
+		<echo>Maven build directory is ${seda.project.build.directory}</echo>
+		<echo>Maven build finalName is ${seda.project.build.finalName}</echo>
+		<echo>Maven build sourceDirectory directory is ${seda.project.build.sourceDirectory}</echo>
+		<echo>Maven build outputDirectory directory is ${seda.project.build.outputDirectory}</echo>
+		<echo>Maven build scriptSourceDirectory directory is ${seda.project.build.testSourceDirectory}</echo>
+		<echo>Maven build testOutputDirectory directory is ${seda.project.build.testOutputDirectory}</echo>
+		<echo>Maven build scriptSourceDirectory directory is ${seda.project.build.scriptSourceDirectory}</echo>
+		<echo>Maven build resourceDirectory directory is ${seda.project.build.resources}</echo>
+		<echo>Maven build scriptSourceDirectory directory is ${target.jar.name}</echo>
+	</target> -->
+
+	<!--
+***************************************
+PRIMARY ENTRY POINTS
+***************************************
+-->
+	<!--out log-->
+	<record name="build.log" loglevel="debug" append="no" action="start" />
+
+	<target name="main" depends="clean,call_maven,tar" />
+
+	<target name="tar">
+		<echo>Start packing..</echo>
+		<mkdir dir="${build.dir}/config/seda" />
+		<mkdir dir="${build.dir}/log" />
+		<mkdir dir="${build.dir}/sbin" />
+		<mkdir dir="${seda.esb.lib.dir}" />
+
+		<!--copy esb lib jar-->
+		<copy todir="${build.dir}/config/seda">
+			<fileset dir="${config.dir}" defaultexcludes="yes">
+				<include name="**/seda-server.xml" />
+				<include name="**/log4j2*.xml" />
+				<include name="**/*.ini" />
+			</fileset>
+		</copy>
+
+		<!--copy esb config-->
+		<copydir dest="${build.dir}/config" src="${esb.config.dir}"></copydir>
+
+
+		<copydir dest="${build.dir}/sbin" src="sbin">
+		</copydir>
+
+		<copy todir="${seda.esb.lib.dir}" flatten="true">
+			<fileset dir="${esb.lib.dir}" defaultexcludes="yes">
+				<include name="**/*.jar" />
+				<exclude name="seda/*.jar" />
+			</fileset>
+		</copy>
+
+		<delete includeemptydirs="true" failonerror='false'>
+			<fileset dir="${build.dir}/lib" defaultexcludes="yes">
+				<include name="*esb*.jar" />
+				<include name="*appframe*.jar" />
+				<include name="*comframe*.jar"/>
+			</fileset>
+		</delete>
+
+		<zip destfile="${deploy.name}">
+			<zipfileset dir="${build.dir}" />
+		</zip>
+	</target>
+
+	<!--
+***************************************
+CLEANING
+***************************************
+-->
+
+	<target name='clean' description="remove all compiled files">
+		<echo>clean build directory.</echo>
+		<delete includeemptydirs="true" failonerror='false'>
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+	</target>
+
+	<!--
+***************************************
+JAVA COMPILATION
+***************************************
+-->
+
+
+</project>

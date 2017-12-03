@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<seda-server>
+	<!-- 属性 -->
+	<property>
+		<property name="port" value="8989" />
+		<property name="channelMaxIdleTimeSeconds" value="120" />
+		<property name="workerThreads" value="8" /> <!-- 工作线程 -->
+		<property name="selectorThreads" value="3" /><!-- 选择器线程数 -->
+		<property name="callBackThreads" value="8" /> <!-- 执行回调线程数 -->
+		<property name="asyncConcurrentNumber" value="1024" />
+		<property name="onewayConcurrentNumber" value="1024" />
+		<property name="rcvbufSize" value="65535" />
+		<property name="sndbufSize" value="65535" />
+		<property name="mesgCompressionLimit" value="2048" /><!-- 字节 -->
+		<property name="callServerThreadPoolQueueCapacity" value="100000" /><!-- 
+			执行服务对应线程池阻塞队列大小 -->
+		<property name="callServerThreadPoolNums" value="100" /><!-- 默认CPU个数*4 -->
+		<property name="recordRequestLog" value="true" /><!-- 是否记录请求日志 -->
+	</property>
+</seda-server>

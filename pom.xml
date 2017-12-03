@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ai.aif.seda</groupId>
+	<artifactId>seda-all</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>seda-interface</module>
+		<module>seda-service</module>
+		<module>seda-app</module>
+		<module>seda-common</module>
+		<module>seda-test</module>
+		<module>seda-web-console</module>
+	</modules>
+	<name>ai-${artifactId}.${version}.jar</name>
+	<dependencies>
+		<!-- local maven -->
+		<dependency>
+			<groupId>com.ai</groupId>
+			<artifactId>comframe</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ai</groupId>
+			<artifactId>appframe</artifactId>
+			<version>5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.36.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.geronimo.bundles</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.8_1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<!-- <dependency> <groupId>commons-logging</groupId> <artifactId>commons-logging</artifactId> 
+			<version>1.2</version> </dependency> -->
+
+		<dependency>
+			<groupId>com.ai</groupId>
+			<artifactId>aiesb</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>lang</artifactId>
+			<version>2.1</version>
+		</dependency>
+
+		<!-- 解决Plugin org.apache.maven.plugins:maven-resources-plugin:2.4.3 or 
+			one of its dependencies could not be resolved: Failed to collect -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-resources-plugin</artifactId>
+			<version>2.4.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache</groupId>
+			<artifactId>test</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>F:\seda-all\lib\log4j-1.2.16.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json</groupId>
+			<artifactId>json.jdk</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>F:\seda-all\lib\fastjson-1.2.7.jar</systemPath>
+		</dependency>
+
+	</dependencies>
+
+	<properties>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!-- 解决 org.apache.maven.plugins:maven-resources-plugin:2.6:resources -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-resources-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>resources</goal>
+											<goal>testResources</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

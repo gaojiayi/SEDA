@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<digester-rules>
+	<pattern value="seda-client">
+		<object-create-rule classname="com.ai.aif.seda.config.client.ClientConfig" />
+		<pattern value="property">
+			<pattern value="property">
+				<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+				<set-properties-rule />
+				<set-next-rule methodname="setNodeValue" />
+			</pattern>
+
+			<pattern value="consumer-thread-ratio">
+				<pattern value="property">
+					<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+					<set-properties-rule />
+					<set-next-rule methodname="setRatio" />
+				</pattern>
+			</pattern>
+		</pattern>
+
+		<pattern value="queues">
+			<set-properties-rule>
+				<alias attr-name="default-size" prop-name="defaultQueueSize" />
+			</set-properties-rule>
+
+			<pattern value="queue">
+				<object-create-rule classname="com.ai.aif.seda.config.client.QueueNode" />
+				<set-properties-rule>
+					<alias attr-name="id" prop-name="queueId" />
+				</set-properties-rule>
+				<pattern value="match/condition">
+					<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+					<set-properties-rule>
+						<alias attr-name="key" prop-name="name" />
+					</set-properties-rule>
+					<set-next-rule methodname="setCondition" />
+				</pattern>
+				<set-next-rule methodname="addQueue" />
+			</pattern>
+		</pattern>
+		<pattern value="servers">
+			<set-properties-rule>
+				<alias attr-name="default-port" prop-name="defaultPort" />
+				<alias attr-name="default-connect-timeout" prop-name="defaultConnectTimeout" />
+				<alias attr-name="sndbuf_size" prop-name="sndbufSize" />
+				<alias attr-name="rcvbuf_size" prop-name="rcvbufSize" />
+			</set-properties-rule>
+			<pattern value="server">
+				<object-create-rule classname="com.ai.aif.seda.config.client.ServerNode" />
+				<set-properties-rule>
+					<alias attr-name="id" prop-name="serverId" />
+				</set-properties-rule>
+				<pattern value="property">
+					<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+					<set-properties-rule />
+					<set-next-rule methodname="setNodeValue" />
+				</pattern>
+				<set-next-rule methodname="addServer" />
+			</pattern>
+		</pattern>
+
+		<pattern value="heartbeat">		
+			<pattern value="property">
+				<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+				<set-properties-rule />
+				<set-next-rule methodname="setNodeValue" />
+			</pattern>
+		</pattern>		
+		<pattern value="report">		
+			<pattern value="property">
+				<object-create-rule classname="com.ai.aif.seda.config.PropertyNode" />
+				<set-properties-rule />
+				<set-next-rule methodname="setNodeValue" />
+			</pattern>
+		</pattern>
+	</pattern>
+
+</digester-rules>

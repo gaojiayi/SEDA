@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ai.aif.seda</groupId>
+		<artifactId>seda-all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.ai.aif.seda.service</groupId>
+	<artifactId>seda-service</artifactId>
+	<name>ai-${artifactId}.${version}.jar</name>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ai.aif.seda.common</groupId>
+			<artifactId>seda-common</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ai.aif.seda.interface</groupId>
+			<artifactId>seda-interface</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ai.aif.seda.app</groupId>
+			<artifactId>seda-app</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ai</groupId>
+			<artifactId>log4x</artifactId>
+			<version>2.3</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>ai-${artifactId}-${version}</finalName>
+		<plugins>
+			<!-- plugin> <artifactId>maven-compiler-plugin</artifactId> <configuration> 
+				<source>1.6</source> <target>1.6</target> <encoding>UTF-8</encoding> <compilerArguments> 
+				<extdirs>E:\ASIA Working\3.0\aiseda\seda-parent\lib</extdirs> </compilerArguments> 
+				</configuration> </plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/build/lib</outputDirectory>
+						</configuration>
+
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="${project.parent.basedir}/build/lib">
+									<fileset dir="${project.basedir}/target">
+										<include name="*.jar" />
+									</fileset>
+								</copy>
+								<delete>
+									<fileset dir="${project.parent.basedir}/build/lib"
+										includes="seda*.jar" />
+								</delete>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+</project>
